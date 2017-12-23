@@ -9,20 +9,23 @@
 </head>
 <body>
   <ul id="messages"></ul>
-  <form action="">
+  <form id="f" action="">
     <input id="m" autocomplete="off">
-    <button>Send</button>
+    <button id="boton">Send</button>
   </form>
   <script src="/socket.io/socket.io.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       var socket = io();
-      [].forEach.call(document.querySelectorAll('form'), function (el) {
-        el.addEventListener('submit', function () {
-          socket.emit('chat message', document.getElementById('m').value);
-          document.getElementById('m').value = '';
-          return false;
-        });
+      document.getElementById('f').onsubmit = function () {
+        socket.emit('chat message', document.getElementById('m').value);
+        document.getElementById('m').value = '';
+        return false;
+      };
+      socket.on('chat message', function (msg) {
+        var node = document.createElement('li');
+        node.textContent = msg;
+        document.getElementById('messages').appendChild(node);
       });
     });
   </script>
